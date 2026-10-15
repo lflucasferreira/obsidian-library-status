@@ -19,13 +19,13 @@ const DEFAULT_SETTINGS: StatusIconsSettings = {
 		"\n"
 	),
 	formatField: "formato",
-	formatMappingText: ["físico: 📙", "digital: 🖥️", "pdf: 📄"].join("\n"),
+	formatMappingText: ["físico: 🔖", "digital: 🖥️", "pdf: 📄"].join("\n"),
 	platformField: "plataforma",
-	platformMappingText: ["amazon: 📦", "kindle: 📦", "google livros: ▶️", "google play books: ▶️"].join(
+	platformMappingText: ["amazon: 📦", "kindle: 📦", "google livros: 📘", "google play books: 📘"].join(
 		"\n"
 	),
 	tagsField: "etiquetas",
-	tagsMappingText: ["favorito: ❤️", "desejado: 🎁", "tenho: 🔖", "emprestei: ➡️"].join("\n"),
+	tagsMappingText: ["favorito: ❤️", "desejado: 🎁", "tenho: ✔️", "emprestei: ➡️"].join("\n"),
 	goalField: "objetivo",
 	goalPrefix: "🎯",
 };

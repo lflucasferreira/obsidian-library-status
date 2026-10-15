@@ -42,7 +42,7 @@ formato: [físico, digital]
 
 | Valor | Ícone |
 |---|---|
-| físico | 📙 |
+| físico | 🔖 |
 | digital | 🖥️ |
 | pdf | 📄 |
 
@@ -55,7 +55,7 @@ plataforma: amazon
 | Valor | Ícone |
 |---|---|
 | amazon / kindle | 📦 |
-| google livros / google play books | ▶️ |
+| google livros / google play books | 📘 |
 
 ## Mapeamento padrão — Etiquetas
 
@@ -67,7 +67,7 @@ etiquetas: [favorito, tenho]
 |---|---|
 | favorito | ❤️ |
 | desejado | 🎁 |
-| tenho | 🔖 |
+| tenho | ✔️ |
 | emprestei | ➡️ |
 
 ## Objetivo (sem mapeamento, valor livre)
