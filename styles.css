@@ -14,4 +14,7 @@
 
 .status-icon-tag {
 	display: inline-block;
+	font-size: 0.85em;
+	white-space: nowrap;
+	opacity: 0.85;
 }

@@ -1,7 +1,7 @@
 {
   "name": "obsidian-status-icons",
-  "version": "2.0.0",
-  "description": "Mostra status (ícone à esquerda) e etiquetas (ícones à direita) no explorador de arquivos do Obsidian, a partir de campos de frontmatter.",
+  "version": "2.1.0",
+  "description": "Mostra status (ícone à esquerda), etiquetas e objetivo (à direita) no explorador de arquivos do Obsidian, a partir de campos de frontmatter.",
   "main": "main.js",
   "scripts": {
     "dev": "node esbuild.config.mjs",

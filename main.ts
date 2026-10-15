@@ -5,15 +5,19 @@ interface StatusIconsSettings {
 	statusMappingText: string;
 	tagsField: string;
 	tagsMappingText: string;
+	goalField: string;
+	goalPrefix: string;
 }
 
 const DEFAULT_SETTINGS: StatusIconsSettings = {
 	statusField: "status",
-	statusMappingText: ["lendo: 📖", "planejado: 📌", "lido: ✅", "abandonado: ❌", "desejado: ⭐"].join(
+	statusMappingText: ["lendo: 📖", "planejado: 📌", "lido: ✅", "abandonado: ❌", "relendo: 🔁"].join(
 		"\n"
 	),
 	tagsField: "etiquetas",
 	tagsMappingText: ["favorito: ❤️", "desejado: 🎁", "tenho: 🔖", "emprestei: ➡️"].join("\n"),
+	goalField: "objetivo",
+	goalPrefix: "🎯",
 };
 
 function parseMapping(mappingText: string): Record<string, string> {
@@ -50,7 +54,7 @@ export default class StatusIconsPlugin extends Plugin {
 	private tagsMapping: Record<string, string> = {};
 	/** Status icon, prepended to the left of the filename (one per file). */
 	private statusEls: Map<string, HTMLElement> = new Map();
-	/** Tag icons, appended to the right edge of the row (same spot as the native bookmark marker). */
+	/** Etiqueta icons + objetivo badge, appended to the right edge (same spot as the native bookmark marker). */
 	private tagsEls: Map<string, HTMLElement> = new Map();
 	private refreshQueued = false;
 
@@ -129,13 +133,26 @@ export default class StatusIconsPlugin extends Plugin {
 		return icons;
 	}
 
+	/** Free-form value (ex: um ano), não um enum fixo — por isso não entra no mapeamento de ícones. */
+	private goalBadgeForFile(file: TFile): string | undefined {
+		const frontmatter = this.app.metadataCache.getFileCache(file)?.frontmatter;
+		const raw = frontmatter?.[this.settings.goalField];
+		if (raw === undefined || raw === null || raw === "") return undefined;
+		const values = toStringArray(raw);
+		if (values.length === 0) return undefined;
+		return `${this.settings.goalPrefix}${values.join(", ")}`;
+	}
+
 	private refreshAll() {
 		const views = this.getFileExplorerViews();
 		if (views.length === 0) return;
 
 		for (const file of this.app.vault.getMarkdownFiles()) {
 			this.applyStatus(views, file.path, this.statusIconForFile(file));
-			this.applyTags(views, file.path, this.tagIconsForFile(file));
+			const rightSide = [...this.tagIconsForFile(file)];
+			const goalBadge = this.goalBadgeForFile(file);
+			if (goalBadge) rightSide.push(goalBadge);
+			this.applyTags(views, file.path, rightSide);
 		}
 	}
 
@@ -261,5 +278,31 @@ class StatusIconsSettingTab extends PluginSettingTab {
 					await this.plugin.saveSettings();
 				});
 			});
+
+		containerEl.createEl("h3", {
+			text: "Objetivo (valor livre, ex: ano — à direita, junto das etiquetas)",
+		});
+
+		new Setting(containerEl)
+			.setName("Campo do frontmatter")
+			.setDesc(
+				"Campo escalar ou lista sem valores fixos (ex: objetivo: 2026). O valor aparece como texto, não precisa de mapeamento."
+			)
+			.addText((text) =>
+				text.setValue(this.plugin.settings.goalField).onChange(async (value) => {
+					this.plugin.settings.goalField = value.trim() || "objetivo";
+					await this.plugin.saveSettings();
+				})
+			);
+
+		new Setting(containerEl)
+			.setName("Prefixo exibido antes do valor")
+			.setDesc("Ex: 🎯 → nota com objetivo: 2026 mostra '🎯2026'.")
+			.addText((text) =>
+				text.setValue(this.plugin.settings.goalPrefix).onChange(async (value) => {
+					this.plugin.settings.goalPrefix = value;
+					await this.plugin.saveSettings();
+				})
+			);
 	}
 }
