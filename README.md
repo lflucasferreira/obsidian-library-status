@@ -86,7 +86,7 @@ formato `valor: ícone`, em blocos separados para Status, Etiquetas e Objetivo.
 1. Instale o plugin [BRAT](https://github.com/TfTHacker/obsidian42-brat) pelo
    diretório de plugins da comunidade do Obsidian.
 2. Em **Configurações → BRAT → Add Beta plugin**, cole:
-   `lflucasferreira/obsidian-status-icons`
+   `lflucasferreira/obsidian-library-status`
 3. Ative o plugin "Status Icons (File Explorer)" em
    **Configurações → Plugins da comunidade**.
 
