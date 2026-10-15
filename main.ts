@@ -3,6 +3,8 @@ import { App, Plugin, PluginSettingTab, Setting, TFile, WorkspaceLeaf } from "ob
 interface StatusIconsSettings {
 	statusField: string;
 	statusMappingText: string;
+	formatField: string;
+	formatMappingText: string;
 	tagsField: string;
 	tagsMappingText: string;
 	goalField: string;
@@ -14,6 +16,8 @@ const DEFAULT_SETTINGS: StatusIconsSettings = {
 	statusMappingText: ["lendo: 📖", "planejado: 📌", "lido: ✅", "abandonado: ❌", "relendo: 🔁"].join(
 		"\n"
 	),
+	formatField: "formato",
+	formatMappingText: ["físico: 📕", "digital: 💻", "pdf: 📄"].join("\n"),
 	tagsField: "etiquetas",
 	tagsMappingText: ["favorito: ❤️", "desejado: 🎁", "tenho: 🔖", "emprestei: ➡️"].join("\n"),
 	goalField: "objetivo",
@@ -40,6 +44,25 @@ function toStringArray(value: unknown): string[] {
 	return [String(value)];
 }
 
+/**
+ * Like toStringArray, but also splits legacy scalar values written as
+ * "digital + físico" or "físico, digital" into separate tokens — needed for a
+ * field like `formato` where older notes combined multiple values in one string
+ * instead of a proper YAML list.
+ */
+function toStringArraySplitting(value: unknown): string[] {
+	if (value === undefined || value === null) return [];
+	if (Array.isArray(value)) {
+		return value
+			.map((v) => String(v).trim())
+			.filter(Boolean);
+	}
+	return String(value)
+		.split(/[+,]/)
+		.map((v) => v.trim())
+		.filter(Boolean);
+}
+
 // Minimal shape of Obsidian's internal (undocumented) FileExplorer view/items.
 interface InternalFileItem {
 	selfEl: HTMLElement;
@@ -51,6 +74,7 @@ interface InternalFileExplorerView {
 export default class StatusIconsPlugin extends Plugin {
 	settings: StatusIconsSettings;
 	private statusMapping: Record<string, string> = {};
+	private formatMapping: Record<string, string> = {};
 	private tagsMapping: Record<string, string> = {};
 	/** Status icon, prepended to the left of the filename (one per file). */
 	private statusEls: Map<string, HTMLElement> = new Map();
@@ -96,6 +120,7 @@ export default class StatusIconsPlugin extends Plugin {
 
 	private rebuildMappings() {
 		this.statusMapping = parseMapping(this.settings.statusMappingText);
+		this.formatMapping = parseMapping(this.settings.formatMappingText);
 		this.tagsMapping = parseMapping(this.settings.tagsMappingText);
 	}
 
@@ -120,6 +145,17 @@ export default class StatusIconsPlugin extends Plugin {
 		const frontmatter = this.app.metadataCache.getFileCache(file)?.frontmatter;
 		const raw = frontmatter?.[this.settings.statusField];
 		return raw ? this.statusMapping[String(raw).toLowerCase()] : undefined;
+	}
+
+	private formatIconsForFile(file: TFile): string[] {
+		const frontmatter = this.app.metadataCache.getFileCache(file)?.frontmatter;
+		const values = toStringArraySplitting(frontmatter?.[this.settings.formatField]);
+		const icons: string[] = [];
+		for (const value of values) {
+			const icon = this.formatMapping[value.toLowerCase()];
+			if (icon && !icons.includes(icon)) icons.push(icon);
+		}
+		return icons;
 	}
 
 	private tagIconsForFile(file: TFile): string[] {
@@ -149,7 +185,7 @@ export default class StatusIconsPlugin extends Plugin {
 
 		for (const file of this.app.vault.getMarkdownFiles()) {
 			this.applyStatus(views, file.path, this.statusIconForFile(file));
-			const rightSide = [...this.tagIconsForFile(file)];
+			const rightSide = [...this.formatIconsForFile(file), ...this.tagIconsForFile(file)];
 			const goalBadge = this.goalBadgeForFile(file);
 			if (goalBadge) rightSide.push(goalBadge);
 			this.applyTags(views, file.path, rightSide);
@@ -247,6 +283,34 @@ class StatusIconsSettingTab extends PluginSettingTab {
 				text.inputEl.cols = 30;
 				text.setValue(this.plugin.settings.statusMappingText).onChange(async (value) => {
 					this.plugin.settings.statusMappingText = value;
+					await this.plugin.saveSettings();
+				});
+			});
+
+		containerEl.createEl("h3", {
+			text: "Formato (pode ter vários valores ao mesmo tempo, à direita)",
+		});
+
+		new Setting(containerEl)
+			.setName("Campo do frontmatter")
+			.setDesc(
+				"Campo de lista ou texto combinado (ex: formato: [físico, digital], ou 'digital + físico'). Todos os ícones presentes aparecem juntos, antes das etiquetas."
+			)
+			.addText((text) =>
+				text.setValue(this.plugin.settings.formatField).onChange(async (value) => {
+					this.plugin.settings.formatField = value.trim() || "formato";
+					await this.plugin.saveSettings();
+				})
+			);
+
+		new Setting(containerEl)
+			.setName("Mapeamento valor → ícone")
+			.setDesc("Uma linha por valor, no formato 'valor: ícone'.")
+			.addTextArea((text) => {
+				text.inputEl.rows = 4;
+				text.inputEl.cols = 30;
+				text.setValue(this.plugin.settings.formatMappingText).onChange(async (value) => {
+					this.plugin.settings.formatMappingText = value;
 					await this.plugin.saveSettings();
 				});
 			});

@@ -7,6 +7,9 @@ arquivos, com base em dois campos de frontmatter — inspirado no modelo do Skoo
 - **Status** (campo escalar, por padrão `status`): um único ícone, à **esquerda** do
   nome do arquivo. Representa o estado de leitura — mutuamente exclusivo, valores
   fixos mapeados para ícone.
+- **Formato** (campo de lista ou texto combinado, por padrão `formato`): zero ou
+  mais ícones, à **direita**, antes das etiquetas. Aceita `formato: [físico, digital]`
+  ou o formato legado `formato: digital + físico` (string separada por `+`/`,`).
 - **Etiquetas** (campo de lista, por padrão `etiquetas`): zero ou mais ícones, à
   **direita** do nome (mesmo lugar onde apareceria o marcador nativo de bookmark).
   Rótulos independentes que podem coexistir com qualquer status, valores fixos
@@ -27,6 +30,18 @@ funciona para qualquer frontmatter com valores fixos.
 | lido | ✅ |
 | abandonado | ❌ |
 | relendo | 🔁 |
+
+## Mapeamento padrão — Formato
+
+```yaml
+formato: [físico, digital]
+```
+
+| Valor | Ícone |
+|---|---|
+| físico | 📕 |
+| digital | 💻 |
+| pdf | 📄 |
 
 ## Mapeamento padrão — Etiquetas
 
