@@ -1,0 +1,10 @@
+{
+  "id": "status-icons-file-explorer",
+  "name": "Status Icons (File Explorer)",
+  "version": "1.0.0",
+  "minAppVersion": "0.15.0",
+  "description": "Mostra um ícone diferente no explorador de arquivos para cada valor de um campo de frontmatter (ex: status: lendo, desejado, lido).",
+  "author": "Lucas Ferreira",
+  "authorUrl": "https://github.com/lflucasferreira",
+  "isDesktopOnly": false
+}

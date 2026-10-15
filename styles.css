@@ -1,0 +1,5 @@
+.status-icon-badge {
+	margin-right: 4px;
+	display: inline-block;
+	flex-shrink: 0;
+}
