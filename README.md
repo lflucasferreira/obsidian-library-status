@@ -10,6 +10,9 @@ arquivos, com base em dois campos de frontmatter — inspirado no modelo do Skoo
 - **Formato** (campo de lista ou texto combinado, por padrão `formato`): zero ou
   mais ícones, à **direita**, antes das etiquetas. Aceita `formato: [físico, digital]`
   ou o formato legado `formato: digital + físico` (string separada por `+`/`,`).
+- **Plataforma digital** (campo de lista ou texto combinado, por padrão `plataforma`):
+  onde o arquivo digital está (amazon/kindle, google livros...), à **direita**, depois
+  do formato.
 - **Etiquetas** (campo de lista, por padrão `etiquetas`): zero ou mais ícones, à
   **direita** do nome (mesmo lugar onde apareceria o marcador nativo de bookmark).
   Rótulos independentes que podem coexistir com qualquer status, valores fixos
@@ -39,9 +42,20 @@ formato: [físico, digital]
 
 | Valor | Ícone |
 |---|---|
-| físico | 📕 |
-| digital | 💻 |
+| físico | 📘 |
+| digital | 📱 |
 | pdf | 📄 |
+
+## Mapeamento padrão — Plataforma digital
+
+```yaml
+plataforma: amazon
+```
+
+| Valor | Ícone |
+|---|---|
+| amazon / kindle | 📦 |
+| google livros / google play books | ▶️ |
 
 ## Mapeamento padrão — Etiquetas
 

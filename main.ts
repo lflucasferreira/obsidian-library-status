@@ -5,6 +5,8 @@ interface StatusIconsSettings {
 	statusMappingText: string;
 	formatField: string;
 	formatMappingText: string;
+	platformField: string;
+	platformMappingText: string;
 	tagsField: string;
 	tagsMappingText: string;
 	goalField: string;
@@ -17,7 +19,11 @@ const DEFAULT_SETTINGS: StatusIconsSettings = {
 		"\n"
 	),
 	formatField: "formato",
-	formatMappingText: ["físico: 📕", "digital: 💻", "pdf: 📄"].join("\n"),
+	formatMappingText: ["físico: 📘", "digital: 📱", "pdf: 📄"].join("\n"),
+	platformField: "plataforma",
+	platformMappingText: ["amazon: 📦", "kindle: 📦", "google livros: ▶️", "google play books: ▶️"].join(
+		"\n"
+	),
 	tagsField: "etiquetas",
 	tagsMappingText: ["favorito: ❤️", "desejado: 🎁", "tenho: 🔖", "emprestei: ➡️"].join("\n"),
 	goalField: "objetivo",
@@ -75,6 +81,7 @@ export default class StatusIconsPlugin extends Plugin {
 	settings: StatusIconsSettings;
 	private statusMapping: Record<string, string> = {};
 	private formatMapping: Record<string, string> = {};
+	private platformMapping: Record<string, string> = {};
 	private tagsMapping: Record<string, string> = {};
 	/** Status icon, prepended to the left of the filename (one per file). */
 	private statusEls: Map<string, HTMLElement> = new Map();
@@ -121,6 +128,7 @@ export default class StatusIconsPlugin extends Plugin {
 	private rebuildMappings() {
 		this.statusMapping = parseMapping(this.settings.statusMappingText);
 		this.formatMapping = parseMapping(this.settings.formatMappingText);
+		this.platformMapping = parseMapping(this.settings.platformMappingText);
 		this.tagsMapping = parseMapping(this.settings.tagsMappingText);
 	}
 
@@ -158,6 +166,17 @@ export default class StatusIconsPlugin extends Plugin {
 		return icons;
 	}
 
+	private platformIconsForFile(file: TFile): string[] {
+		const frontmatter = this.app.metadataCache.getFileCache(file)?.frontmatter;
+		const values = toStringArraySplitting(frontmatter?.[this.settings.platformField]);
+		const icons: string[] = [];
+		for (const value of values) {
+			const icon = this.platformMapping[value.toLowerCase()];
+			if (icon && !icons.includes(icon)) icons.push(icon);
+		}
+		return icons;
+	}
+
 	private tagIconsForFile(file: TFile): string[] {
 		const frontmatter = this.app.metadataCache.getFileCache(file)?.frontmatter;
 		const values = toStringArray(frontmatter?.[this.settings.tagsField]);
@@ -185,7 +204,11 @@ export default class StatusIconsPlugin extends Plugin {
 
 		for (const file of this.app.vault.getMarkdownFiles()) {
 			this.applyStatus(views, file.path, this.statusIconForFile(file));
-			const rightSide = [...this.formatIconsForFile(file), ...this.tagIconsForFile(file)];
+			const rightSide = [
+				...this.formatIconsForFile(file),
+				...this.platformIconsForFile(file),
+				...this.tagIconsForFile(file),
+			];
 			const goalBadge = this.goalBadgeForFile(file);
 			if (goalBadge) rightSide.push(goalBadge);
 			this.applyTags(views, file.path, rightSide);
@@ -311,6 +334,34 @@ class StatusIconsSettingTab extends PluginSettingTab {
 				text.inputEl.cols = 30;
 				text.setValue(this.plugin.settings.formatMappingText).onChange(async (value) => {
 					this.plugin.settings.formatMappingText = value;
+					await this.plugin.saveSettings();
+				});
+			});
+
+		containerEl.createEl("h3", {
+			text: "Plataforma digital (onde está o arquivo, à direita, depois do formato)",
+		});
+
+		new Setting(containerEl)
+			.setName("Campo do frontmatter")
+			.setDesc(
+				"Campo de lista ou texto combinado (ex: plataforma: amazon, ou plataforma: [amazon, google livros])."
+			)
+			.addText((text) =>
+				text.setValue(this.plugin.settings.platformField).onChange(async (value) => {
+					this.plugin.settings.platformField = value.trim() || "plataforma";
+					await this.plugin.saveSettings();
+				})
+			);
+
+		new Setting(containerEl)
+			.setName("Mapeamento valor → ícone")
+			.setDesc("Uma linha por valor, no formato 'valor: ícone'.")
+			.addTextArea((text) => {
+				text.inputEl.rows = 5;
+				text.inputEl.cols = 30;
+				text.setValue(this.plugin.settings.platformMappingText).onChange(async (value) => {
+					this.plugin.settings.platformMappingText = value;
 					await this.plugin.saveSettings();
 				});
 			});
