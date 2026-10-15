@@ -12,7 +12,7 @@ frontmatter com valores fixos.
 
 | Valor | Ícone |
 |---|---|
-| lendo | 👀 |
+| lendo | 📖 |
 | planejado | 📌 |
 | lido | ✅ |
 | abandonado | ❌ |

@@ -7,7 +7,7 @@ interface StatusIconsSettings {
 
 const DEFAULT_SETTINGS: StatusIconsSettings = {
 	frontmatterField: "status",
-	mappingText: ["lendo: 👀", "planejado: 📌", "lido: ✅", "abandonado: ❌", "desejado: ⭐"].join(
+	mappingText: ["lendo: 📖", "planejado: 📌", "lido: ✅", "abandonado: ❌", "desejado: ⭐"].join(
 		"\n"
 	),
 };
