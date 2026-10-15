@@ -1,5 +1,17 @@
-.status-icon-badge {
+.status-icon-status {
 	margin-right: 4px;
 	display: inline-block;
 	flex-shrink: 0;
+}
+
+.status-icon-tags {
+	margin-left: auto;
+	padding-left: 4px;
+	display: inline-flex;
+	gap: 2px;
+	flex-shrink: 0;
+}
+
+.status-icon-tag {
+	display: inline-block;
 }
