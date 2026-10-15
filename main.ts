@@ -19,7 +19,7 @@ const DEFAULT_SETTINGS: StatusIconsSettings = {
 		"\n"
 	),
 	formatField: "formato",
-	formatMappingText: ["físico: 📘", "digital: 📱", "pdf: 📄"].join("\n"),
+	formatMappingText: ["físico: 📙", "digital: 🖥️", "pdf: 📄"].join("\n"),
 	platformField: "plataforma",
 	platformMappingText: ["amazon: 📦", "kindle: 📦", "google livros: ▶️", "google play books: ▶️"].join(
 		"\n"

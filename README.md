@@ -42,8 +42,8 @@ formato: [físico, digital]
 
 | Valor | Ícone |
 |---|---|
-| físico | 📘 |
-| digital | 📱 |
+| físico | 📙 |
+| digital | 🖥️ |
 | pdf | 📄 |
 
 ## Mapeamento padrão — Plataforma digital

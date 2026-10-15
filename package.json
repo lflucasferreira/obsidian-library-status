@@ -1,6 +1,6 @@
 {
   "name": "obsidian-status-icons",
-  "version": "2.3.0",
+  "version": "2.3.1",
   "description": "Mostra status (ícone à esquerda), formato, plataforma digital, etiquetas e objetivo (à direita) no explorador de arquivos do Obsidian, a partir de campos de frontmatter.",
   "main": "main.js",
   "scripts": {
