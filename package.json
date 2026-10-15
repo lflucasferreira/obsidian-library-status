@@ -1,6 +1,6 @@
 {
   "name": "obsidian-status-icons",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Mostra um ícone no explorador de arquivos do Obsidian baseado em um campo de frontmatter (ex: status: lendo/desejado/lido).",
   "main": "main.js",
   "scripts": {

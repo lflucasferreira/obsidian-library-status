@@ -12,11 +12,11 @@ frontmatter com valores fixos.
 
 | Valor | Ícone |
 |---|---|
-| lendo | 📖 |
-| planejado | 🗓️ |
+| lendo | 👀 |
+| planejado | 📌 |
 | lido | ✅ |
-| abandonado | ⏸️ |
-| desejado | 🛒 |
+| abandonado | ❌ |
+| desejado | ⭐ |
 
 Edite em **Configurações → Status Icons (File Explorer)** — um valor por linha, no
 formato `valor: ícone`.
